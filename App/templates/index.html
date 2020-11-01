@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} AskForum {% endblock %}
+
+{% block body %}
+    
+
+    <!-- Main Area -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-12 col-12">
+                <a href="/" class="leftSideDivOpt">
+                    <h6><i class="fas fa-home"></i>Home</h6>
+                </a>
+                
+                <a href="#" class="leftSideDivOpt">
+                    <h6>
+                        <i class="far fa-question-circle"></i>Questions</h6>
+                </a>
+                <br>
+                <a href="#" class="leftSideDivOpt">
+                    <h6><i class="fas fa-poll"></i>Poll
+                </a>
+                <br><br>
+                <a href="#" class="leftSideDivOpt">
+                    <h6><i class="fas fa-tags"></i>Tags
+                </a><br><br>
+
+                <a href="#" class="leftSideDivOpt">
+                    <h6><i class="fas fa-ribbon"></i>Badges
+                </a><br><br>
+                <a href="#" class="leftSideDivOpt">
+                    <h6><i class="fas fa-user"></i>User
+                </a><br><br>
+                <a href="#" class="leftSideDivOpt">
+                    <h6><i class="far fa-life-ring"></i>Help
+                </a><br><br>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 col-12">
+                <!-- Tab links -->
+                <div class="tab">
+                    <a href="/recent/"><button class="tablinks {% if class_ == 'recent' %} active {% endif %}">Recent Question</button></a>
+                    <a href="/mostAnswered/"><button class="tablinks {% if class_ == 'mostAnswered' %} active {% endif %}">Most Answered</button></a>
+                    <a href="/mostVisited/"><button class="tablinks {% if class_ == 'mostVisited' %} active {% endif %}">Most visited</button></a>
+                    <a href="/mostPopular/"><button class="tablinks {% if class_ == 'mostPopular' %} active {% endif %}">Most Popular</button></a>
+                </div>
+
+                <!-- Tab content -->
+                <div id="Recent_Question" class="tabcontent" style="display: block;">
+
+                    {% for question in AllQuestions %}
+                    
+                    <div class="border-bottom pb-2">
+                        <h6>
+                            
+                            <img src="{{question.User.profilePic.url}}" class="midprofile">
+                            <a href="/profile/{{question.User.UserId}}">
+                            <span class="mr-2">{{question.User.FirstName}} {{question.User.LastName}}</span>
+                            </a>
+                            
+                            <span class="mr-1 btn-warning">Enlightened</span>
+                            <span style="color:grey;font-size:small;">Asked:<span> April 19, 2018</span></span>
+                            <span style="color:grey;font-size:small;" class="ml-2">In:<span>Programmers</span></span>
+                            <br>
+
+                        </h6>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                                <center>
+
+                                    <h3 style="cursor: pointer;color:grey;font-weight: bolder;">
+                                        <span onclick="votes('up--{{question.questionId}}')" data-href="{{question.questionId}}"
+                                            class="material-icons" onclick="">
+                                            arrow_drop_up
+                                        </span><br>
+                                        <span id="{{question.questionId}}">{{question.totalVotes}}</span><br>
+                                        <span class="material-icons" onclick="votes('down--{{question.questionId}}')">
+                                            arrow_drop_down
+                                        </span></h3>
+                                </center>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+                                <span style="font-size:large;font-weight: bold;">
+                                    
+                                {{question.question}}
+                                
+                                </span>
+                                <br>
+                                <span style="color:gray">
+                                    {{answer.User.FirstName}} {{answer.User.LastName}}
+                                    {% if not question.answers %}
+                                    <span> No answers Yet</span>
+                                    {% endif %}
+                                   
+                                    <!-- {{question.answer|slice:1}} -->
+                                    {% for ans in question.answers|slice:1  %}
+                                    {{ans.answer  }}
+                                    <br>
+                                    {% endfor %}
+                                    
+                                    </span>
+                                <div class="midDivinnerSect">
+                                    <button>{{question.answers|length}} Answers</button>
+                                    <button>{{question.Views}} Views</button>
+                                    <button class="float-right">
+                                    <a href="/answer/{{question.questionId}}">
+                                        <strong class='answer' data-href="{{question.questionId}}">Answer</strong></button>
+                                    </a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                <div class="rightSideDiv">
+                
+                    <br>
+                    <table>
+                        <tr>
+                            <td class="border">
+                                <p style="color:blue;">Question<br>
+                                    <strong style="color:black;">21</strong></p>
+                            </td>
+
+                            <td>
+                                <p style="color:red;">Answer
+                                    <strong style="color:black;">100</strong></p>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="border">
+                                <p style="color:green;">Best Answer
+                                    <strong style="color:black;">21</strong></p>
+                            </td>
+
+                            <td>
+                                <p style="color:blue;">Users
+                                    <strong style="color:black;">100</strong></p>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                    <!-- Popular/Answer Section -->
+                    <!-- Tab links -->
+                    <br>
+                    <div class="tab">
+                        <button class="tablinks1" onclick="openCity1(event, 'RightPopular')">Popular</button>
+                        <button class="tablinks1" onclick="openCity1(event, 'RightAnswer')">Answer</button>
+                    </div>
+
+                    <!-- Tab content -->
+
+                    <div id="RightPopular" class="tabcontent1">
+                        <p><img src="{% static 'images/user.png' %}">How to approach applying for a job at a company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}">How to approach applying for a job at a company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}">How to approach applying for a job at a company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                    </div>
+
+                    <div id="RightAnswer" class="tabcontent1">
+                        <p><img src="{% static 'images/user.png' %}">How to approach applying for a job at a company<br>
+                            <span>April 19,2018 at 2:07Pm</span></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}">How to approach applying for a job at a company<br>
+                            <span>April 19,2018 at 2:07Pm</span></p>
+                        <hr>
+
+                    </div>
+
+                    <div>
+                        <h5><strong><span class="mr-2">?</span>Related Questions</strong></h5>
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+                    </div>
+
+                    <div>
+                        <h5><strong><span class="mr-2"><i class="fa fa-user"></i></span>Top Members</strong></h5>
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+
+                        <p><img src="{% static 'images/user.png' %}" class="profilePic">How to approach applying for a job at a
+                            company<br>
+                            <a href="#"><span>6 Answer</span></a></p>
+                        <hr>
+                    </div>
+
+                    <div>
+                        <h5><strong><span class="mr-2"><i class="fa fa-user"></i></span>Tranding Tags</strong></h5>
+                        <a href="#" class="tagBtn">Analytics</a>
+                        <a href="#" class="tagBtn">Facebook</a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+
+
+{% endblock %}
+
+</html>
