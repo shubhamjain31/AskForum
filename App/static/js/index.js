@@ -109,7 +109,6 @@ function is_flag(){
 // for validating question modal with session
 $('#questionModalButton').on('click',function(e){
   // console.log(is_flag(result))
-  console.log(is_flag());
   if (!is_flag().Result){
     alert('Please Login to Continue!');
   }
@@ -149,34 +148,3 @@ $("#answertext").keyup(function(){
     document.getElementById('answerbtn1').style.display = 'block';
   }
 });
-
-// $('.answer').on('click',function(e){
-//   var v =  $(this).attr("data-href");
-//   // console.log(v);
-//   input = document.getElementById(v);
-//   input.style.display = 'block';
-// })
-
-// console.log(v)
-// $('#'+v).on('keypress',function(e){
-//   answer = $(this).val()
-//   if(e.which === 13){
-    
-
-//     event.preventDefault();
-  
-//     $.ajax({
-//     method:'POST',
-//     url: $(this).attr('action') ,
-//     // url : '/postanswer/',
-//     data: $(this).serialize(),
-//     dataType : 'json',
-//     success:function(e){
-//       console.log(e)
-//     },
-//     error:function(e){
-//       console.log("Fail");
-//     }
-//   });
-//   }    
-//   });

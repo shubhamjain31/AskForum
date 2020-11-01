@@ -53,7 +53,7 @@
 
         </h6>
 
-        {% for ans in AllAnswers %}
+        {% for ans,user in AllAnswers %}
             
         <div class="row">
 
@@ -76,12 +76,11 @@
                 <span style="color:gray">
                      
                     <img src="/media/media/user.png" class="midprofile">
-                    <span class="mr-2">{{ans.User}}</span>
+                    <span class="mr-2">{{user}}</span>
                     <small>{{ans.date}}</small>
                     <br>
                     <span> {{ans.answer}}</span>
                     <br>
-                    {{ans.answerId}}
                     <hr>
                 </span>
             </div>

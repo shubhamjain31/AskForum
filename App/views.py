@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
+from App.decorators import is_logged_In
+from django.db.models import Count
 from .models import *
 from . import accountSettings
 import uuid
@@ -90,3 +92,46 @@ def askaquestion(request):
 	user = UserDetail.objects.get(UserId=request.session['user'])
 	Questions(question=questionVal,User=user).save()
 	return JsonResponse({'Result':'Success'})
+
+@is_logged_In
+def answer(request,id):
+	questionData = Questions.objects.get(questionId=id)
+	AllAnswers = Answers.objects.filter(question_id=questionData)
+	all_Users = []
+	for userid in AllAnswers:
+		fName = UserDetail.objects.get(UserId=userid.User).FirstName
+		lName = UserDetail.objects.get(UserId=userid.User).LastName
+		all_Users.append(fName+' '+lName)
+	params = {'AllAnswers':zip(AllAnswers,all_Users),'questionData':questionData}
+	return render(request,'answers.html', params)
+
+@csrf_exempt
+def postanswer(request):
+	qid = request.POST.get('questionId')
+	answer = request.POST.get('answer')
+	answerId = uuid.uuid4()
+	questionObj = Questions.objects.get(questionId=qid)
+	answerObj = Answers(answerId=answerId,question=questionObj,answer=answer,totalVotes=0,User=request.session['user'])
+	answerObj.save()
+	
+	return HttpResponseRedirect('/answer/'+qid+'/')
+
+def recent(request):
+	recentQuestions = Questions.objects.all().order_by('-date')
+	params = {'AllQuestions':recentQuestions,'class_':'recent'}
+	return render(request,'index.html',params)
+
+def mostAnswered(request):
+	mostAnswered = Questions.objects.annotate(count=Count('answers')).order_by('-count')
+	params = {'AllQuestions':mostAnswered,'class_':'mostAnswered'}
+	return render(request,'index.html',params)
+
+def mostVisited(request):
+	mostVisited = Questions.objects.annotate(count=Count('Views')).order_by('-count')
+	params = {'AllQuestions':mostVisited,'class_':'mostVisited'}
+	return render(request,'index.html',params)
+
+def mostPopular(request):
+	mostPopular = Questions.objects.all().order_by('-totalVotes','-Views')
+	params = {'AllQuestions':mostPopular,'class_':'mostPopular'}
+	return render(request,'index.html',params)

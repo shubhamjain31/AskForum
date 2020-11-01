@@ -31,6 +31,13 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
 
     path('askaquestion/', views.askaquestion, name='askaquestion'),
+    path('answer/<str:id>/', views.answer, name='answer'),
+    path('postanswer/', views.postanswer, name='postanswer'),
+
+    path('recent/', views.recent, name='recent'),
+    path('mostAnswered/', views.mostAnswered, name='mostAnswered'),
+    path('mostVisited/', views.mostVisited, name='mostVisited'),
+    path('mostPopular/', views.mostPopular, name='mostPopular'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
