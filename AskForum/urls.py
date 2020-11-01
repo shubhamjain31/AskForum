@@ -38,6 +38,8 @@ urlpatterns = [
     path('mostAnswered/', views.mostAnswered, name='mostAnswered'),
     path('mostVisited/', views.mostVisited, name='mostVisited'),
     path('mostPopular/', views.mostPopular, name='mostPopular'),
+
+    path('profile/<str:id>', views.profile, name='profile'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

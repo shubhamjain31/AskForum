@@ -118,20 +118,41 @@ def postanswer(request):
 
 def recent(request):
 	recentQuestions = Questions.objects.all().order_by('-date')
-	params = {'AllQuestions':recentQuestions,'class_':'recent'}
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user,'AllQuestions':recentQuestions,'class_':'recent'}
+	else:
+		params = {'AllQuestions':recentQuestions,'class_':'recent'}
 	return render(request,'index.html',params)
 
 def mostAnswered(request):
 	mostAnswered = Questions.objects.annotate(count=Count('answers')).order_by('-count')
-	params = {'AllQuestions':mostAnswered,'class_':'mostAnswered'}
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user,'AllQuestions':mostAnswered,'class_':'mostAnswered'}
+	else:
+		params = {'AllQuestions':mostAnswered,'class_':'mostAnswered'}
 	return render(request,'index.html',params)
 
 def mostVisited(request):
 	mostVisited = Questions.objects.annotate(count=Count('Views')).order_by('-count')
-	params = {'AllQuestions':mostVisited,'class_':'mostVisited'}
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user,'AllQuestions':mostVisited,'class_':'mostVisited'}
+	else:
+		params = {'AllQuestions':mostVisited,'class_':'mostVisited'}
 	return render(request,'index.html',params)
 
 def mostPopular(request):
 	mostPopular = Questions.objects.all().order_by('-totalVotes','-Views')
-	params = {'AllQuestions':mostPopular,'class_':'mostPopular'}
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user,'AllQuestions':mostPopular,'class_':'mostPopular'}
+	else:
+		params = {'AllQuestions':mostPopular,'class_':'mostPopular'}
 	return render(request,'index.html',params)
+
+def profile(request, id):
+	userInfo = UserDetail.objects.get(UserId=id)
+	params = {'user':userInfo}
+	return render(request, 'Profile.html', params)
