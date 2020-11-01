@@ -20,6 +20,12 @@ def index(request):
 		params = {'AllQuestions':recentQuestions,'class_':'recent'}
 	return render(request, "index.html", params)
 
+def about(request):
+	return render(request, "about.html")
+
+def contactus(request):
+	return render(request, "contactus.html")
+
 @csrf_exempt
 def sessionval(request):
 	if request.session.has_key('user'):

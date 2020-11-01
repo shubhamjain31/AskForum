@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} AskForum - Contact Us {% endblock %}
+{% block body %}
+
+<!-- Page -->
+<section class="contact-page spad pb-0">
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="contact-form-warp">
+          <div class="section-title text-dark text-left">
+            <h2>Get in Touch</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. </p>
+          </div>
+          <form class="mt-5">
+            <div class="row">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Your Name">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Your E-mail">
+              </div>
+              <div class="col">
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" placeholder="Message" style="resize: none;"></textarea>
+              </div>
+              <div class="col">
+                <button class="btn btn-success"> Send</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="contact-info-area bg-light">
+          <div class="section-title text-left p-0">
+            <h2>Contact Info</h2>
+            <p>If you need help, please contact us. To share product feedback on our products, please visit our community here.</p>
+          </div>
+          <div class="phone-number">
+            <span class="text-info font-weight-bold">Direct Line</span>
+            <h2>+91-817160****</h2>
+          </div>
+          <ul class="contact-list ml-4">
+            <li>23, XYZ Nagar, <br>Agra</li>
+            <li>+91-817160****</li>
+            <li>sj27754@gmail.com</li>
+          </ul>
+          <div class="social-links">
+            <a href="#" class="mr-2"><i class="fa fa-instagram"></i></a>
+            <a href="#" class="mr-2"><i class="fa fa-facebook"></i></a>
+            <a href="#" class="mr-2"><i class="fa fa-twitter"></i></a>
+            <a href="#" class="mr-2"><i class="fa fa-github"></i></a>
+            <a href="#"><i class="fa fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page end -->
+
+{% endblock %}

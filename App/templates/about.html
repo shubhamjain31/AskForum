@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} AskForum - About {% endblock %}
+
+{% block body %}
+<!-- Page info -->
+<div class="page-info-section set-bg" data-setbg="{% static 'webuni/img/page-bg/4.jpg' %}">
+  <div class="container">
+    <div class="site-breadcrumb">
+      <a href="/">Back</a>
+      <span>About Us</span>
+    </div>
+  </div>
+</div>
+<!-- Page info end -->
+
+
+<section class="about-us py-5 " id="about-us">
+    <div class="container mt-5">
+	<div class="row">
+		<div class="col-md-6">
+		    <h1 class='text-primary'>About</h1>
+		    <h2>Why AskForum Exists</h2>
+		    <hr>
+		    <p>AskForum’s mission is to share and grow the world’s knowledge. A vast amount of the knowledge that would be valuable to many people is currently only available to a few — either locked in people’s heads, or only accessible to select groups. We want to connect the people who have knowledge to the people who need it, to bring together people with different perspectives so they can understand each other better, and to empower everyone to share their knowledge for the benefit of the rest of the world.</p>
+		    <button type="button" class="btn btn-primary">Let's Know More</button>
+
+		</div>
+		<div class="col-md-6">
+		    <img src="http://themebubble.com/demo/marketingpro/wp-content/uploads/2016/10/seo-slide.png "alt="">
+		</div>
+	</div>
+</div>
+</section>
+{% endblock %}
