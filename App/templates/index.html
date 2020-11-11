@@ -49,7 +49,7 @@
                 <!-- Tab content -->
                 <div id="Recent_Question" class="tabcontent" style="display: block;">
 
-                    {% for question in AllQuestions %}
+                    {% for question, Answers in AllQuestions %}
                     
                     <div class="border-bottom pb-2">
                         <h6>
@@ -91,18 +91,18 @@
                                 <br>
                                 <span style="color:gray">
                                     {{answer.User.FirstName}} {{answer.User.LastName}}
-                                    {% if not question.answers %}
+                                    {% if not Answers %}
                                     <span> No answers Yet</span>
                                     {% endif %}
                                    
-                                    {% for ans in question.answers|slice:1  %}
+                                    {% for ans in Answers|slice:1  %}
                                     {{ans.answer  }}
                                     <br>
                                     {% endfor %}
                                     
                                     </span>
                                 <div class="midDivinnerSect">
-                                    <button>{{question.answers|length}} Answers</button>
+                                    <button>{{Answers|length}} Answers</button>
                                     <button>{{question.Views}} Views</button>
                                     <button class="float-right">
                                     <a href="/answer/{{question.questionId}}">

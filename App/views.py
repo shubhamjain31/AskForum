@@ -15,11 +15,15 @@ from django.contrib import messages
 
 def index(request):
 	recentQuestions = Questions.objects.all().order_by('-date')
+	Ans = []
+	for qid in recentQuestions:
+		allAnswers = Answers.objects.filter(question=qid)
+		Ans.append(allAnswers)
 	if request.session.has_key('user'):
 		user = request.session['user']
-		params = {'userloggedIn':user,'AllQuestions':recentQuestions,'class_':'recent'}
+		params = {'userloggedIn':user,'AllQuestions':zip(recentQuestions,Ans),'class_':'recent',}
 	else:
-		params = {'AllQuestions':recentQuestions,'class_':'recent'}
+		params = {'AllQuestions':zip(recentQuestions,Ans),'class_':'recent'}
 	return render(request, "index.html", params)
 
 def about(request):
@@ -108,6 +112,12 @@ def answer(request,id):
 	questionData = Questions.objects.get(questionId=id)
 	AllAnswers = Answers.objects.filter(question_id=questionData)
 	all_Users = []
+	count=''
+	for question in  Questions.objects.filter(questionId=id):
+		count = str(question.Views)
+	view_count = str(int(count)+1)
+	print(view_count)
+	datasave = Questions.objects.filter(questionId=id).update(Views=view_count)
 	for userid in AllAnswers:
 		fName = UserDetail.objects.get(UserId=userid.User).FirstName
 		lName = UserDetail.objects.get(UserId=userid.User).LastName
@@ -128,38 +138,54 @@ def postanswer(request):
 
 def recent(request):
 	recentQuestions = Questions.objects.all().order_by('-date')
+	Ans = []
+	for qid in recentQuestions:
+		allAnswers = Answers.objects.filter(question=qid)
+		Ans.append(allAnswers)
 	if request.session.has_key('user'):
 		user = request.session['user']
-		params = {'userloggedIn':user,'AllQuestions':recentQuestions,'class_':'recent'}
+		params = {'userloggedIn':user,'AllQuestions':zip(recentQuestions,Ans),'class_':'recent'}
 	else:
-		params = {'AllQuestions':recentQuestions,'class_':'recent'}
+		params = {'AllQuestions':zip(recentQuestions,Ans),'class_':'recent'}
 	return render(request,'index.html',params)
 
 def mostAnswered(request):
 	mostAnswered = Questions.objects.annotate(count=Count('answers')).order_by('-count')
+	Ans = []
+	for qid in mostAnswered:
+		allAnswers = Answers.objects.filter(question=qid)
+		Ans.append(allAnswers)
 	if request.session.has_key('user'):
 		user = request.session['user']
-		params = {'userloggedIn':user,'AllQuestions':mostAnswered,'class_':'mostAnswered'}
+		params = {'userloggedIn':user,'AllQuestions':zip(mostAnswered,Ans),'class_':'mostAnswered'}
 	else:
-		params = {'AllQuestions':mostAnswered,'class_':'mostAnswered'}
+		params = {'AllQuestions':zip(mostAnswered,Ans),'class_':'mostAnswered'}
 	return render(request,'index.html',params)
 
 def mostVisited(request):
 	mostVisited = Questions.objects.annotate(count=Count('Views')).order_by('-count')
+	Ans = []
+	for qid in mostVisited:
+		allAnswers = Answers.objects.filter(question=qid)
+		Ans.append(allAnswers)
 	if request.session.has_key('user'):
 		user = request.session['user']
-		params = {'userloggedIn':user,'AllQuestions':mostVisited,'class_':'mostVisited'}
+		params = {'userloggedIn':user,'AllQuestions':zip(mostVisited,Ans),'class_':'mostVisited'}
 	else:
-		params = {'AllQuestions':mostVisited,'class_':'mostVisited'}
+		params = {'AllQuestions':zip(mostVisited,Ans),'class_':'mostVisited'}
 	return render(request,'index.html',params)
 
 def mostPopular(request):
 	mostPopular = Questions.objects.all().order_by('-totalVotes','-Views')
+	Ans = []
+	for qid in mostPopular:
+		allAnswers = Answers.objects.filter(question=qid)
+		Ans.append(allAnswers)
 	if request.session.has_key('user'):
 		user = request.session['user']
-		params = {'userloggedIn':user,'AllQuestions':mostPopular,'class_':'mostPopular'}
+		params = {'userloggedIn':user,'AllQuestions':zip(mostPopular,Ans),'class_':'mostPopular'}
 	else:
-		params = {'AllQuestions':mostPopular,'class_':'mostPopular'}
+		params = {'AllQuestions':zip(mostPopular,Ans),'class_':'mostPopular'}
 	return render(request,'index.html',params)
 
 def profile(request, id):
@@ -171,21 +197,26 @@ def search(request):
 	flag = False
 	
 	query = request.GET['search']
-	if len(query)>20:
+
+	if query == '':
+		allQuestions = Questions.objects.none()
+	elif len(query)>20:
 		allQuestions = Questions.objects.none()
 	else:
 		allQuestions = Questions.objects.filter(question__icontains=query)
+		Ans = []
+		for qid in allQuestions:
+			allAnswers = Answers.objects.filter(question=qid)
+			Ans.append(allAnswers)
+		print(Ans)
 		#allposts = allPostTitle.union(allPostCategory,allPostChannel_Name)
 	if allQuestions.count() == 0:
 		messages.warning(request,'No search results found. Please refine your query')
-	if request.session.has_key('is_logged'):
+	if request.session.has_key('user'):
 		flag = True
-		# userPic = Users.objects.filter(UserId=request.session['is_logged'])
-		# params = {'allposts':allposts,'query':query,'flag':flag,'image':userPic}
+		user = request.session['user']
+		userPic = UserDetail.objects.filter(UserId=request.session['user'])
+		params = {'allQuestions':zip(allQuestions,Ans),'query':query,'flag':flag,'image':userPic,'Questions':allQuestions,'userloggedIn':user}
 	else:
-		if request.session.has_key('user'):
-			user = request.session['user']
-			params = {'allQuestions':allQuestions,'query':query,'flag':flag,'userloggedIn':user}
-		else:
-			params = {'allQuestions':allQuestions,'query':query,'flag':flag}
+		params = {'allQuestions':zip(allQuestions,Ans),'query':query,'flag':flag,'Questions':allQuestions}
 	return render(request,'search.html',params)

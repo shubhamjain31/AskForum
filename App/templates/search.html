@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-2">
   <h2>Search results:</h2>
-  {% if allQuestions|length < 1 %}
+  {% if Questions|length < 1 %}
   <p>No search results</p>
 
   Your search - <b>{{query}} </b>- did not match any documents.<br><br>
@@ -25,7 +25,7 @@
     <div class="row">
       <div id="Recent_Question" class="tabcontent" style="display: block;">
 
-                    {% for question in allQuestions %}
+                    {% for question, answers in allQuestions %}
                     
                     <div class="border-bottom pb-2">
                         <h6>
@@ -67,18 +67,18 @@
                                 <br>
                                 <span style="color:gray">
                                     {{answer.User.FirstName}} {{answer.User.LastName}}
-                                    {% if not question.answers %}
+                                    {% if not answers %}
                                     <span> No answers Yet</span>
                                     {% endif %}
                                    
-                                    {% for ans in question.answers|slice:1  %}
+                                    {% for ans in answers|slice:1  %}
                                     {{ans.answer  }}
                                     <br>
                                     {% endfor %}
                                     
                                     </span>
                                 <div class="midDivinnerSect">
-                                    <button>{{question.answers|length}} Answers</button>
+                                    <button>{{answers|length}} Answers</button>
                                     <button>{{question.Views}} Views</button>
                                     <button class="float-right">
                                     <a href="/answer/{{question.questionId}}">
