@@ -9,6 +9,7 @@ from . import accountSettings
 import uuid
 import datetime
 from django.contrib import messages
+from django.db.models import Case, Value, When
 
 
 # Create your views here.
@@ -116,7 +117,6 @@ def answer(request,id):
 	for question in  Questions.objects.filter(questionId=id):
 		count = str(question.Views)
 	view_count = str(int(count)+1)
-	print(view_count)
 	datasave = Questions.objects.filter(questionId=id).update(Views=view_count)
 	for userid in AllAnswers:
 		fName = UserDetail.objects.get(UserId=userid.User).FirstName
@@ -208,8 +208,6 @@ def search(request):
 		for qid in allQuestions:
 			allAnswers = Answers.objects.filter(question=qid)
 			Ans.append(allAnswers)
-		print(Ans)
-		#allposts = allPostTitle.union(allPostCategory,allPostChannel_Name)
 	if allQuestions.count() == 0:
 		messages.warning(request,'No search results found. Please refine your query')
 	if request.session.has_key('user'):
@@ -220,3 +218,165 @@ def search(request):
 	else:
 		params = {'allQuestions':zip(allQuestions,Ans),'query':query,'flag':flag,'Questions':allQuestions}
 	return render(request,'search.html',params)
+
+@csrf_exempt
+def vote(request):	
+	questionId = request.POST.get('questionId')
+	action = request.POST.get('action')
+
+	question_posted_by = Questions.objects.get(questionId=questionId).User.UserId
+	score_of_person_voting = UserDetail.objects.get(UserId=request.session['user']).Score
+	question_owner_score = Questions.objects.get(questionId=questionId).User.Score
+	print(score_of_person_voting)
+
+	if question_posted_by == request.session['user']:
+		return JsonResponse({'Response':"You can't vote your own Question",'flag':False})
+	elif score_of_person_voting < 10:
+		return JsonResponse({'Response':"You don't have enough score!",'flag':False})
+		
+	if action == 'up':
+		voteType = 1
+		total_score_change = 10
+	elif action == 'down':
+		voteType = -1
+		total_score_change = -10
+	else:
+		pass
+
+	voteRecord = QuestionVotes.objects.filter(questionId=questionId,userId=request.session['user'])
+
+	upVoteRecord = voteRecord.filter(voteType=1)
+
+	downVoteRecord = voteRecord.filter(voteType=-1)
+
+	voteCount = Questions.objects.get(questionId=questionId).totalVotes
+
+	if upVoteRecord and action == 'up':
+		print('1')
+		msg = 'Already Upvoted'; count = 0
+		pass
+	elif upVoteRecord and action == 'down':
+		print('2')
+		msg = 'You downvoted this question'; count = -1
+		Questions.objects.filter(questionId=questionId).update(totalVotes=voteCount - 1)
+		UserDetail.objects.filter(UserId=question_posted_by).update(Score = question_owner_score + total_score_change)
+
+
+	elif downVoteRecord and action == 'down':
+		print('3')
+		msg = 'Already Downvoted'; count = 0
+		pass
+	elif downVoteRecord and action == 'up':
+		print('4')
+		msg = 'You upvoted this question'; count = 1
+		Questions.objects.filter(questionId=questionId).update(totalVotes=voteCount + 1)
+		UserDetail.objects.filter(UserId=question_posted_by).update(Score = question_owner_score +total_score_change)
+
+	if voteRecord and action == 'up':
+		QuestionVotes.objects.filter(questionId=questionId,userId=request.session['user']
+		).update(voteType=Case(
+			When(voteType=1, then=Value(1)),
+			When(voteType=-1,then=Value(1)),
+		))
+		
+	elif voteRecord and action == 'down':
+		QuestionVotes.objects.filter(questionId=questionId,userId=request.session['user']
+		).update(voteType=Case(
+			When(voteType=1, then=Value(-1)),
+			When(voteType=-1,then=Value(-1)),
+		))
+		
+	else:
+		QuestionVotes(questionId=questionId,userId=request.session['user'],voteType=voteType).save()
+		Questions.objects.filter(questionId=questionId).update(totalVotes = voteCount + voteType)
+		msg = 'You ' + action + 'voted this question'; count = voteType
+		UserDetail.objects.filter(UserId=question_posted_by).update(Score = question_owner_score +total_score_change)
+	outcome = {'Response':msg,'count':count,'action':action}
+
+	return JsonResponse(outcome)
+
+@csrf_exempt
+def answervote(request):
+	questionid = request.POST.get('questionId')
+	answerid = request.POST.get('answerId')
+	action = request.POST.get('action')	
+	
+	score_of_person_voting = UserDetail.objects.get(UserId=request.session['user']).Score
+	
+	questionObj = Questions.objects.get(questionId=questionid)
+	allAnswers = Answers.objects.filter(question=questionObj)
+	for ans in allAnswers:
+		if str(ans.answerId) == answerid:	
+			voteCount =  ans.totalVotes
+			answer_posted_by = ans.User
+			answer_owner_score = UserDetail.objects.get(UserId=answer_posted_by).Score
+			break
+	if answer_posted_by == request.session['user']:
+		return JsonResponse({'Response':"You can't vote your own Answer",'flag':False})
+	elif score_of_person_voting < 0:
+		return JsonResponse({'Response':"You don't have enough score!",'flag':False})
+
+	if action == 'up':
+		voteType = 1
+		total_score_change = 10
+	elif action == 'down':
+		voteType = -1
+		total_score_change = -10
+	else:
+		pass
+
+	voteRecord = AnswerVotes.objects.filter(answerId=answerid,userId=request.session['user'])
+	
+	upVoteRecord = voteRecord.filter(voteType=1)
+	
+	downVoteRecord = voteRecord.filter(voteType=-1)
+	
+	
+	if upVoteRecord and action == 'up':
+		print('1')
+		msg = 'Already Upvoted'; count = 0
+		pass
+	
+	elif upVoteRecord and action == 'down':
+		print('2')
+		msg = 'You downvoted this answer'; count = -1
+		ans.totalVotes -= 1				
+		questionObj.save()
+		UserDetail.objects.filter(UserId=answer_posted_by).update(Score = answer_owner_score + total_score_change)
+	
+	elif downVoteRecord and action == 'down':
+		print('3')
+		msg = 'Already Downvoted'; count = 0
+		pass
+	
+	elif downVoteRecord and action == 'up':
+		print('4')
+		msg = 'You upvoted this answer'; count = 1
+		ans.totalVotes += 1
+		
+		questionObj.save()
+		UserDetail.objects.filter(UserId=answer_posted_by).update(Score = answer_owner_score + total_score_change)
+
+	if voteRecord and action == 'up':
+		AnswerVotes.objects.filter(answerId=answerid,userId=request.session['user']
+		).update(voteType=Case(
+			When(voteType=1, then=Value(1)),
+			When(voteType=-1,then=Value(1)),
+		))
+		
+	elif voteRecord and action == 'down':
+		AnswerVotes.objects.filter(answerId=answerid,userId=request.session['user']
+		).update(voteType=Case(
+			When(voteType=1, then=Value(-1)),
+			When(voteType=-1,then=Value(-1)),
+		))
+		
+	else:
+		AnswerVotes(answerId=answerid,userId=request.session['user'],voteType=voteType).save()
+		
+		ans.totalVotes += voteType
+		
+		questionObj.save()
+		msg = 'You ' + action + 'voted this question'; count = voteType
+		UserDetail.objects.filter(UserId=answer_posted_by).update(Score = answer_owner_score +total_score_change)
+	return JsonResponse({'Response':msg,'count':count,'action':action})

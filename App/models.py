@@ -48,3 +48,19 @@ class Answers(models.Model):
 
 	def __str__(self):
 		return str(self.answerId)
+
+class QuestionVotes(models.Model):
+	questionId = models.CharField(max_length=100,blank=True)
+	userId = models.CharField(max_length=50)
+	voteType = models.IntegerField(blank=True)		# -1 for down 1 for up
+
+	def __str__(self):
+		return str(self.questionId)
+
+class AnswerVotes(models.Model):
+	answerId = models.CharField(max_length=100,blank=True)
+	userId = models.CharField(max_length=50)
+	voteType = models.IntegerField(blank=True)		# -1 for down 1 for up
+
+	def __str__(self):
+		return str(self.answerId)

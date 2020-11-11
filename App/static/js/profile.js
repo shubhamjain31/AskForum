@@ -19,4 +19,4 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
   }
 
-  document.getElementById("Tokyo").style.display="block";
+  // document.getElementById("Tokyo").style.display="block";

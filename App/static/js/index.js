@@ -30,7 +30,7 @@ function votes(val){
   console.log(res);
   $.ajax({
     method:'POST',
-    url:'/votes/vote/',
+    url:'/vote/',
 
     data:{
       questionId : res[1],
@@ -65,7 +65,7 @@ $('.vote').on('click',function(e){
 
   $.ajax({
     method:'POST',
-    url:'/votes/answervote/',
+    url:'/answervote/',
     data:{
       questionId:$(this).attr("data-value"),
       answerId:answerId,

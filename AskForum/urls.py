@@ -41,6 +41,8 @@ urlpatterns = [
 
     path('profile/<str:id>', views.profile, name='profile'),
     path('search/', views.search, name='search'),
+    path('vote/',views.vote,name='vote'),
+    path('answervote/', views.answervote, name='answervote'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
