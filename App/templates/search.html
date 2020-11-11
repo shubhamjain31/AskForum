@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Search Results {% endblock %}
+
+{% block body %}
+
+<body>
+<div class="container mt-2">
+  <h2>Search results:</h2>
+  {% if allQuestions|length < 1 %}
+  <p>No search results</p>
+
+  Your search - <b>{{query}} </b>- did not match any documents.<br><br>
+  Suggestions:  
+  <ul>
+    <li>Make sure that all words are spelled correctly.</li>
+    <li>Try different keywords.</li>
+    <li>Try more general keywords.</li>
+    <li>Try fewer keywords</li>
+  </ul>
+  {% endif %}
+  <div class="container">
+    <div class="row">
+      <div id="Recent_Question" class="tabcontent" style="display: block;">
+
+                    {% for question in allQuestions %}
+                    
+                    <div class="border-bottom pb-2">
+                        <h6>
+                            
+                            <img src="{{question.User.profilePic.url}}" class="midprofile">
+                            <a href="/profile/{{question.User.UserId}}">
+                            <span class="mr-2">{{question.User.FirstName}} {{question.User.LastName}}</span>
+                            </a>
+                            
+                            <span class="mr-1 btn-warning">Enlightened</span>
+                            <span style="color:grey;font-size:small;">Asked:<span> {{question.date}}</span></span>
+                            <span style="color:grey;font-size:small;" class="ml-2">In:<span>Programmers</span></span>
+                            <br>
+
+                        </h6>
+
+                        <div class="row">
+
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                                <center>
+
+                                    <h3 style="cursor: pointer;color:grey;font-weight: bolder;">
+                                        <span onclick="votes('up--{{question.questionId}}')" data-href="{{question.questionId}}"
+                                            class="material-icons" onclick="">
+                                            arrow_drop_up
+                                        </span><br>
+                                        <span id="{{question.questionId}}">{{question.totalVotes}}</span><br>
+                                        <span class="material-icons" onclick="votes('down--{{question.questionId}}')">
+                                            arrow_drop_down
+                                        </span></h3>
+                                </center>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+                                <span style="font-size:large;font-weight: bold;">
+                                    
+                                {{question.question}}
+                                
+                                </span>
+                                <br>
+                                <span style="color:gray">
+                                    {{answer.User.FirstName}} {{answer.User.LastName}}
+                                    {% if not question.answers %}
+                                    <span> No answers Yet</span>
+                                    {% endif %}
+                                   
+                                    {% for ans in question.answers|slice:1  %}
+                                    {{ans.answer  }}
+                                    <br>
+                                    {% endfor %}
+                                    
+                                    </span>
+                                <div class="midDivinnerSect">
+                                    <button>{{question.answers|length}} Answers</button>
+                                    <button>{{question.Views}} Views</button>
+                                    <button class="float-right">
+                                    <a href="/answer/{{question.questionId}}">
+                                        <strong class='answer' data-href="{{question.questionId}}">Answer</strong></button>
+                                    </a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+    </div>
+  </div>
+</div>
+</body>
+{% endblock %}

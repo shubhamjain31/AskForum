@@ -23,10 +23,20 @@ def index(request):
 	return render(request, "index.html", params)
 
 def about(request):
-	return render(request, "about.html")
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user}
+	else:
+		params = {}
+	return render(request, "about.html", params)
 
 def contactus(request):
-	return render(request, "contactus.html")
+	if request.session.has_key('user'):
+		user = request.session['user']
+		params = {'userloggedIn':user}
+	else:
+		params = {}
+	return render(request, "contactus.html", params)
 
 @csrf_exempt
 def sessionval(request):
@@ -156,3 +166,26 @@ def profile(request, id):
 	userInfo = UserDetail.objects.get(UserId=id)
 	params = {'user':userInfo}
 	return render(request, 'Profile.html', params)
+
+def search(request):
+	flag = False
+	
+	query = request.GET['search']
+	if len(query)>20:
+		allQuestions = Questions.objects.none()
+	else:
+		allQuestions = Questions.objects.filter(question__icontains=query)
+		#allposts = allPostTitle.union(allPostCategory,allPostChannel_Name)
+	if allQuestions.count() == 0:
+		messages.warning(request,'No search results found. Please refine your query')
+	if request.session.has_key('is_logged'):
+		flag = True
+		# userPic = Users.objects.filter(UserId=request.session['is_logged'])
+		# params = {'allposts':allposts,'query':query,'flag':flag,'image':userPic}
+	else:
+		if request.session.has_key('user'):
+			user = request.session['user']
+			params = {'allQuestions':allQuestions,'query':query,'flag':flag,'userloggedIn':user}
+		else:
+			params = {'allQuestions':allQuestions,'query':query,'flag':flag}
+	return render(request,'search.html',params)

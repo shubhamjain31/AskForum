@@ -40,6 +40,7 @@ urlpatterns = [
     path('mostPopular/', views.mostPopular, name='mostPopular'),
 
     path('profile/<str:id>', views.profile, name='profile'),
+    path('search/', views.search, name='search'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
