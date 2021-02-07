@@ -14,6 +14,9 @@ from django.db.models import Case, Value, When
 
 # Create your views here.
 
+def error_404_view(request):
+	return render(request, "404.html")
+
 def index(request):
 	recentQuestions = Questions.objects.all().order_by('-date')
 	Ans = []
