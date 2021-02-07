@@ -43,8 +43,12 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('vote/',views.vote,name='vote'),
     path('answervote/', views.answervote, name='answervote'),
+
+    path('session_logout/',views.session_logout, name='session_logout'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+#Custom Error URLs
 handle404 = 'error_404_view'
+handle500 = 'error_500_view'

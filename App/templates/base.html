@@ -148,6 +148,24 @@
     );
 });
 
+// Expire Session on Tab Close
+window.addEventListener("beforeunload", function (e) {        
+    $.ajax({
+        type:"post",
+        url:'/session_logout/',
+
+        data:{
+        },
+        
+        success:function(e){
+            console.log("success");
+        },
+        error:function(data){
+            console.log("fail");
+        }
+    })
+      return;
+});
     </script>
 </body>
 </html>

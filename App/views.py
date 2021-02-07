@@ -6,16 +6,12 @@ from App.decorators import is_logged_In
 from django.db.models import Count
 from .models import *
 from . import accountSettings
-import uuid
 import datetime
 from django.contrib import messages
 from django.db.models import Case, Value, When
 
 
 # Create your views here.
-
-def error_404_view(request):
-	return render(request, "404.html")
 
 def index(request):
 	recentQuestions = Questions.objects.all().order_by('-date')
@@ -29,6 +25,20 @@ def index(request):
 	else:
 		params = {'AllQuestions':zip(recentQuestions,Ans),'class_':'recent'}
 	return render(request, "index.html", params)
+
+#Custom 404 Error
+def error_404_view(request):
+	return render(request, "404.html")
+
+#Custom 500 Error
+def error_500_view(request):
+	return render(request, "500.html")
+
+# Expire Session on Tab Close
+@csrf_exempt
+def session_logout(request):
+	logout(request)
+	return JsonResponse({"Status":"Success"})
 
 def about(request):
 	if request.session.has_key('user'):
@@ -78,18 +88,23 @@ def register(request):
 		else:
 			return render(request,'registerAccount.html')
 
+@csrf_exempt
 def login(request):
 	if request.method == 'POST':
 		email = request.POST.get("email")
 		password = request.POST.get("password")
-		login_status = accountSettings.loginToAccount(
-			email=email,password=password
-		)
-		if not login_status:
-			return render(request,'signin.html',{'message':'Please Check Your Email and Password'})
+		check = request.POST.get("check")
+		if check == "remember_me":
+			login_status = accountSettings.loginToAccount(
+				email=email,password=password
+			)
+			if not login_status:
+				return render(request,'signin.html',{'message':'Please Check Your Email and Password'})
+			else:
+				request.session['user'] = login_status
+				return HttpResponseRedirect('/')
 		else:
-			request.session['user'] = login_status
-			return HttpResponseRedirect('/')
+			return render(request,'signin.html',{'message':'Please Tick The Checkbox'})
 		
 	else:
 		if request.session.has_key('user'):
