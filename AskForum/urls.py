@@ -50,5 +50,5 @@ urlpatterns = [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #Custom Error URLs
-handle404 = 'error_404_view'
-handle500 = 'error_500_view'
+handler404 = 'App.views.error_404_view'
+handler500 = 'App.views.error_500_view'

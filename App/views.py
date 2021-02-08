@@ -27,7 +27,7 @@ def index(request):
 	return render(request, "index.html", params)
 
 #Custom 404 Error
-def error_404_view(request):
+def error_404_view(request, exception):
 	return render(request, "404.html")
 
 #Custom 500 Error
