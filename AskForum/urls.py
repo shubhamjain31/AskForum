@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('profile/<str:id>', views.profile, name='profile'),
     path('search/', views.search, name='search'),
+    path('userProfile/', views.userProfile, name='userProfile'),
     path('vote/',views.vote,name='vote'),
     path('answervote/', views.answervote, name='answervote'),
 

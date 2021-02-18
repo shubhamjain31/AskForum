@@ -37,7 +37,8 @@ def error_500_view(request):
 # Expire Session on Tab Close
 @csrf_exempt
 def session_logout(request):
-	logout(request)
+	# logout(request)
+	print('session finish')
 	return JsonResponse({"Status":"Success"})
 
 def about(request):
@@ -398,3 +399,7 @@ def answervote(request):
 		msg = 'You ' + action + 'voted this question'; count = voteType
 		UserDetail.objects.filter(UserId=answer_posted_by).update(Score = answer_owner_score +total_score_change)
 	return JsonResponse({'Response':msg,'count':count,'action':action})
+
+def userProfile(request):
+	name = "Shubham-Jain"
+	return render(request, 'Profile.html', {'uname':name})

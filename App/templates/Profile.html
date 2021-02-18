@@ -3,6 +3,9 @@
 
 {% block title %} AskForum - Profile{% endblock %}
 
+<!-- custom filters for django templates -->
+{% load custom_filters %}
+
 {% block body %}
 
 <body>
@@ -15,6 +18,7 @@
             <div class="row" id="ProfileWrapper">
                 <img src="{{user.profilePic.url}}" class="profileImage">
                 <div class="profileData">
+                    <h1>{{uname|split:"-"}}</h1>
                 <h2>{{user.FirstName}} {{user.LastName}}</h2>
                 <h5>Software Developer</h5>
                 <p>Write a description</p>
