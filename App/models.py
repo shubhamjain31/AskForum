@@ -23,6 +23,7 @@ class UserDetail(models.Model):
 	    (OTHER, 'Other')
 	    ]
 	Gender = models.CharField(max_length=1,default='',choices=GENDER_CHOICES)
+	date = models.DateTimeField(auto_now_add=True, blank=True)
 
 	def __str__(self):
 		return self.FirstName+' '+self.LastName
