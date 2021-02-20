@@ -14,7 +14,6 @@ from django.db.models import Case, Value, When
 # Create your views here.
 
 def index(request):
-	print(UserDetail.objects.get(pk=1).date)
 	recentQuestions = Questions.objects.all().order_by('-date')
 	Ans = []
 	for qid in recentQuestions:

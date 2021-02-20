@@ -12,3 +12,4 @@ class TimezoneMiddleware(object):
 
 	def process_request(self, request):
 		activate(pytz.timezone('Asia/Kolkata'))
+		return self.get_response(request)
