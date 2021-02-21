@@ -41,11 +41,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
-    #Not working
-    # 'Middleware.middleware.TimezoneMiddleware',
-
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
