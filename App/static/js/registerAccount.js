@@ -11,3 +11,6 @@ function validateform(){
   }
 
 
+$(document).ready(function(){
+	$("#securityQuestion").select2();
+});
