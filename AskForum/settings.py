@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Middleware.middleware.SessionExpiredMiddleware',
 ]
 
 ROOT_URLCONF = 'AskForum.urls'
@@ -133,3 +134,13 @@ MEDIA_URL = '/media/'
 # Expire Session on Browser Close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # SESSION_COOKIE_AGE = 5 # 5 seconds for testing
+
+#Handle session is not Json Serializable
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+# Auto logout delay in minutes
+AUTO_LOGOUT_DELAY = 1 #equivalent to 5 minutes
+
+LOGIN_PAGE_URL = "login"
+
+HOME_URL = ["/", "login/"]

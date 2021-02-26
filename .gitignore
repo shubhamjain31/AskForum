@@ -8,5 +8,3 @@ __pycache__/
 
 #secret key
 secret_settings.py
-
-Middleware

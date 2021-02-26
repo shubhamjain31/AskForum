@@ -7,6 +7,7 @@ from django.db.models import Count
 from .models import *
 from . import accountSettings
 import datetime
+from datetime import datetime
 from django.contrib import messages
 from django.db.models import Case, Value, When
 
@@ -14,6 +15,12 @@ from django.db.models import Case, Value, When
 # Create your views here.
 
 def index(request):
+
+	#---------------------get session Id---------------------------------
+	from django.conf import settings
+	session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
+	print(session_key)
+	#----------------------------------------------------------------
 	recentQuestions = Questions.objects.all().order_by('-date')
 	Ans = []
 	for qid in recentQuestions:
